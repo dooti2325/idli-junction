@@ -50,7 +50,7 @@ export default function Contact() {
           <div className="reveal space-y-8">
             {/* Info cards */}
             <div className="space-y-2">
-                  <div
+              {INFO.map(({ icon: Icon, label, value, href }) => ( <div
                     key={label}
                     id={`contact-info-${label.toLowerCase().replace(/\s+/g, '-')}`}
                     className="flex items-start gap-4 p-4 rounded-xl hover:bg-cream transition-colors duration-200 group cursor-default"

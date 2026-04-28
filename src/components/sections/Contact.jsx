@@ -5,7 +5,7 @@ const INFO = [
   {
     icon: MapPin,
     label: 'Find Us',
-    value: 'Shop No G-3, Shivpuja Apt, Bus Stop,\nPL No 50, Beside Trimurti Nagar,\nSubhash Nagar, Nagpur, Maharashtra 440022',
+    value: 'Shop no G-3, Shivpuja Apt, Bus stop,\nPl no 50, Beside Trimurti Nagar,\nSubhash Nagar, Nagpur, Maharashtra 440022',
   },
   {
     icon: Phone,
@@ -50,11 +50,12 @@ export default function Contact() {
           <div className="reveal space-y-8">
             {/* Info cards */}
             <div className="space-y-2">
-              {INFO.map(({ icon: Icon, label, value, href }) => ( <div
-                    key={label}
-                    id={`contact-info-${label.toLowerCase().replace(/\s+/g, '-')}`}
-                    className="flex items-start gap-4 p-4 rounded-xl hover:bg-cream transition-colors duration-200 group cursor-default"
-                  >
+              {INFO.map(({ icon: Icon, label, value, href }) => (
+                <div
+                  key={label}
+                  id={`contact-info-${label.toLowerCase().replace(/\s+/g, '-')}`}
+                  className="flex items-start gap-4 p-4 rounded-xl hover:bg-cream transition-colors duration-200 group cursor-default"
+                >
                   <div
                     className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 transition-colors duration-300 group-hover:bg-spice"
                     style={{ background: 'var(--color-spice-muted)' }}
@@ -103,7 +104,7 @@ export default function Contact() {
                     </svg>
                   ))}
                 </div>
-                <p className="font-body text-xs mt-1" style={{ color: 'rgba(28,28,30,0.4)' }}>126 Reviews</p>
+                <p className="font-body text-xs mt-1" style={{ color: 'rgba(28,28,30,0.4)' }}>129 Reviews</p>
               </div>
               <div className="flex-1 border-l pl-5" style={{ borderColor: 'rgba(232,98,26,0.2)' }}>
                 <p className="font-body font-semibold text-sm" style={{ color: 'var(--color-charcoal)' }}>
@@ -141,7 +142,7 @@ export default function Contact() {
             <div className="rounded-2xl overflow-hidden h-[440px] lg:h-[660px] sticky top-24" style={{ boxShadow: 'var(--shadow-card-hover)' }}>
               <iframe
                 title="Idli Junction Nagpur Location"
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3720.9!2d79.0882!3d21.1458!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjHCsDA4JzQ0LjkiTiA3OcKwMDUnMTcuNSJF!5e0!3m2!1sen!2sin!4v1703248386419!5m2!1sen!2sin"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3721.946115984249!2d79.04011397503417!3d21.114721080556133!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bd4bf6d5ca7885b%3A0x1e16b215d71c6917!2sIDLI%20JUNCTION!5e0!3m2!1sen!2sin!4v1714455075678!5m2!1sen!2sin"
                 width="100%"
                 height="100%"
                 style={{ border: 0, filter: 'saturate(1.1) contrast(0.95)' }}

@@ -47,6 +47,11 @@ export default function Menu() {
   useEffect(() => {
     let unsub = () => {};
     try {
+      if (!db) {
+        setItems(DUMMY_ITEMS);
+        setLoading(false);
+        return;
+      }
       const q = query(collection(db, 'menu_items'), orderBy('category'));
       unsub = onSnapshot(q, (snap) => {
         const arr = snap.docs.map(d => ({ id: d.id, ...d.data() }));

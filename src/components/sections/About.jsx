@@ -2,9 +2,9 @@ import { Leaf, Clock, Award, Heart } from 'lucide-react';
 import useScrollReveal from '../../hooks/useScrollReveal';
 
 const PILLARS = [
-  { icon: Leaf,  title: 'Farm-Fresh',     desc: 'Spices sourced directly from Kerala farms, rice from Kaveri delta.' },
-  { icon: Clock, title: 'Slow-Crafted',   desc: 'Batter fermented 18 hours for the lightest, softest idlies.' },
-  { icon: Award, title: '20+ Years',       desc: 'Two decades of perfecting the art of South Indian cooking.' },
+  { icon: Leaf, title: 'Farm-Fresh', desc: 'Spices sourced directly from Kerala farms, rice from Kaveri delta.' },
+  { icon: Clock, title: 'Slow-Crafted', desc: 'Batter fermented 18 hours for the lightest, softest idlies.' },
+  { icon: Award, title: '20+ Years', desc: 'Two decades of perfecting the art of South Indian cooking.' },
   { icon: Heart, title: 'Made with Love', desc: 'Every dish prepared by hands that know tradition by heart.' },
 ];
 
@@ -29,7 +29,7 @@ export default function About() {
                 <div className="h-[420px] rounded-2xl overflow-hidden shadow-card-hover">
                   <img
                     id="about-img-main"
-                    src="/images/menu_original.jpeg"
+                    src="/images/Idli junction.jpeg"
                     alt="Idli Junction menu"
                     loading="lazy"
                     className="w-full h-full object-cover"
@@ -102,9 +102,9 @@ export default function About() {
           <p className="section-label text-center mb-10">What Our Guests Say</p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {[
-              { name: 'Priya Sharma',    role: 'Regular customer since 2010', text: '"The masala dosa here is simply life-changing. The batter has that perfect fermented tang I haven\'t found anywhere else in the city."' },
-              { name: 'Rajan Iyer',      role: 'Food blogger',                text: '"A gem that keeps the soul of South Indian food alive. The filter coffee alone is worth the trip — thick, aromatic, and just right."' },
-              { name: 'Meera Krishnan', role: 'Brings family every Sunday',   text: '"We\'ve tried every idli place in town. Idli Junction wins, hands down. The ghee podi idli is absolutely divine every single time."' },
+              { name: 'Priya Sharma', role: 'Regular customer since 2010', text: '"The masala dosa here is simply life-changing. The batter has that perfect fermented tang I haven\'t found anywhere else in the city."' },
+              { name: 'Rajan Iyer', role: 'Food blogger', text: '"A gem that keeps the soul of South Indian food alive. The filter coffee alone is worth the trip — thick, aromatic, and just right."' },
+              { name: 'Meera Krishnan', role: 'Brings family every Sunday', text: '"We\'ve tried every idli place in town. Idli Junction wins, hands down. The ghee podi idli is absolutely divine every single time."' },
             ].map(({ name, role, text }, i) => (
               <div key={name} id={`testimonial-${i}`} className="bg-white rounded-2xl p-6 shadow-card border border-gray-100/60 relative overflow-hidden group hover:shadow-card-hover hover:-translate-y-1 transition-all duration-300">
                 <div className="absolute top-0 left-0 w-1 h-full bg-orange-gradient rounded-l-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />

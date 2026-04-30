@@ -19,11 +19,10 @@ export default function Login() {
       await login(email, password);
       navigate('/admin/dashboard');
     } catch {
-      // Dev fallback
-      if (email && password) {
+      if (import.meta.env.DEV && email && password) {
         navigate('/admin/dashboard');
       } else {
-        setError('Please enter your email and password.');
+        setError('Unable to sign in with those credentials.');
       }
     } finally { setLoading(false); }
   };

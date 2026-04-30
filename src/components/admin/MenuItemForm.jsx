@@ -3,11 +3,10 @@ import { doc, addDoc, updateDoc, collection } from 'firebase/firestore';
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { db, storage } from '../../firebase';
 import { X, Upload, ImagePlus } from 'lucide-react';
-
-const CATEGORIES = ['Idli', 'Dosa', 'Snacks', 'Beverages', 'Specials', 'Sweets'];
+import { FALLBACK_IMAGE, MENU_CATEGORIES } from '../../data/menu';
 
 export default function MenuItemForm({ isOpen, onClose, item }) {
-  const [form, setForm]           = useState({ name: '', price: '', description: '', category: '' });
+  const [form, setForm]           = useState({ name: '', price: '', description: '', category: '', available: true, featured: false });
   const [imageFile, setImageFile] = useState(null);
   const [preview, setPreview]     = useState('');
   const [progress, setProgress]   = useState(0);
@@ -16,16 +15,30 @@ export default function MenuItemForm({ isOpen, onClose, item }) {
 
   useEffect(() => {
     if (item) {
-      setForm({ name: item.name, price: item.price, description: item.description, category: item.category });
+      setForm({
+        name: item.name || '',
+        price: item.price || '',
+        description: item.description || '',
+        category: item.category || '',
+        available: item.available !== false,
+        featured: Boolean(item.featured),
+      });
       setPreview(item.image || '');
     }
   }, [item]);
 
-  const handleChange = e => setForm(p => ({ ...p, [e.target.name]: e.target.value }));
+  const handleChange = e => {
+    const { name, value, type, checked } = e.target;
+    setForm(p => ({ ...p, [name]: type === 'checkbox' ? checked : value }));
+  };
 
   const handleFile = e => {
     const f = e.target.files[0];
     if (!f) return;
+    if (f.size > 5 * 1024 * 1024) {
+      setError('Please choose an image smaller than 5MB.');
+      return;
+    }
     setImageFile(f);
     setPreview(URL.createObjectURL(f));
   };
@@ -35,9 +48,9 @@ export default function MenuItemForm({ isOpen, onClose, item }) {
     setLoading(true); setError('');
 
     try {
-      let imageUrl = item?.image || 'https://images.unsplash.com/photo-1589301760014-d929f39ce9b0?w=600&q=80';
+      let imageUrl = item?.image || FALLBACK_IMAGE;
 
-      if (imageFile) {
+      if (imageFile && storage) {
         try {
           const storageRef = ref(storage, `menu_images/${Date.now()}_${imageFile.name}`);
           const task = uploadBytesResumable(storageRef, imageFile);
@@ -56,16 +69,18 @@ export default function MenuItemForm({ isOpen, onClose, item }) {
         price:       Number(form.price),
         description: form.description.trim(),
         category:    form.category,
+        available:   form.available,
+        featured:    form.featured,
         image:       imageUrl,
         updatedAt:   new Date().toISOString(),
       };
 
       try {
+        if (!db) throw new Error('Firebase is not configured.');
         if (item) await updateDoc(doc(db, 'menu_items', item.id), data);
         else       await addDoc(collection(db, 'menu_items'), data);
       } catch {
-        // Firebase not connected — simulate success
-        alert(`✅ Item ${item ? 'updated' : 'added'} (connect Firebase for persistence).`);
+        alert(`Item ${item ? 'updated' : 'added'} locally. Connect Firebase for persistent admin changes.`);
       }
       onClose();
     } catch (err) {
@@ -156,7 +171,7 @@ export default function MenuItemForm({ isOpen, onClose, item }) {
             <label htmlFor="item-category" className="font-body text-xs font-semibold text-charcoal/50 uppercase tracking-wider block mb-2">Category</label>
             <select id="item-category" name="category" required value={form.category} onChange={handleChange} className="input-premium">
               <option value="">Select category…</option>
-              {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+              {MENU_CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
             </select>
           </div>
 
@@ -164,6 +179,17 @@ export default function MenuItemForm({ isOpen, onClose, item }) {
           <div>
             <label htmlFor="item-desc" className="font-body text-xs font-semibold text-charcoal/50 uppercase tracking-wider block mb-2">Description</label>
             <textarea id="item-desc" name="description" required rows="3" value={form.description} onChange={handleChange} placeholder="Describe the dish…" className="input-premium resize-none" />
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <label className="flex items-center gap-3 rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 font-body text-sm font-medium text-charcoal/70">
+              <input type="checkbox" name="available" checked={form.available} onChange={handleChange} className="h-4 w-4 accent-spice" />
+              Available
+            </label>
+            <label className="flex items-center gap-3 rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 font-body text-sm font-medium text-charcoal/70">
+              <input type="checkbox" name="featured" checked={form.featured} onChange={handleChange} className="h-4 w-4 accent-spice" />
+              Featured
+            </label>
           </div>
 
           {/* Actions */}

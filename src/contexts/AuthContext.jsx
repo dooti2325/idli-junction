@@ -12,23 +12,27 @@ export function AuthProvider({ children }) {
   const [currentUser, setCurrentUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // We are creating a simple login function
   function login(email, password) {
+    if (!auth) return Promise.reject(new Error('Firebase Auth is not configured.'));
     return signInWithEmailAndPassword(auth, email, password);
   }
 
   function logout() {
+    if (!auth) return Promise.resolve();
     return signOut(auth);
   }
 
   useEffect(() => {
     let unsubscribe = () => {};
-    // Only subscribe if we are in a real Firebase environment
     try {
-      unsubscribe = onAuthStateChanged(auth, (user) => {
-        setCurrentUser(user);
+      if (auth) {
+        unsubscribe = onAuthStateChanged(auth, (user) => {
+          setCurrentUser(user);
+          setLoading(false);
+        });
+      } else {
         setLoading(false);
-      });
+      }
     } catch(e) {
       console.warn("Firebase Auth not initialized fully yet.");
       setLoading(false);

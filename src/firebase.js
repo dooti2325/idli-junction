@@ -13,14 +13,27 @@ const firebaseConfig = {
   measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
 };
 
-// Initialize Firebase only once, guard against missing config
 let app;
+const requiredConfig = [
+  firebaseConfig.apiKey,
+  firebaseConfig.authDomain,
+  firebaseConfig.projectId,
+  firebaseConfig.storageBucket,
+  firebaseConfig.messagingSenderId,
+  firebaseConfig.appId,
+];
+
 try {
-  app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
+  if (requiredConfig.every(Boolean)) {
+    app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
+  } else {
+    console.warn("Firebase config is incomplete. The app will use local fallback data.");
+  }
 } catch (e) {
   console.error("Firebase init failed:", e);
 }
 
+export const firebaseReady = Boolean(app);
 export const db = app ? getFirestore(app) : null;
 export const auth = app ? getAuth(app) : null;
 export const storage = app ? getStorage(app) : null;

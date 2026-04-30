@@ -1,5 +1,8 @@
+import { useState } from 'react';
+import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
 import { MapPin, Phone, Mail, Clock, MessageCircle } from 'lucide-react';
 import useScrollReveal from '../../hooks/useScrollReveal';
+import { db } from '../../firebase';
 
 const INFO = [
   {
@@ -33,7 +36,45 @@ const INFO = [
 ];
 
 export default function Contact() {
+  const [form, setForm] = useState({ name: '', phone: '', email: '', message: '' });
+  const [status, setStatus] = useState('idle');
+  const [error, setError] = useState('');
   useScrollReveal();
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setForm(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setStatus('submitting');
+    setError('');
+
+    const payload = {
+      name: form.name.trim(),
+      phone: form.phone.trim(),
+      email: form.email.trim(),
+      message: form.message.trim(),
+      status: 'new',
+      source: 'website',
+      createdAt: db ? serverTimestamp() : new Date().toISOString(),
+    };
+
+    try {
+      if (db) {
+        await addDoc(collection(db, 'contact_messages'), payload);
+      } else {
+        const existing = JSON.parse(localStorage.getItem('idli_junction_messages') || '[]');
+        localStorage.setItem('idli_junction_messages', JSON.stringify([{ ...payload, id: crypto.randomUUID() }, ...existing]));
+      }
+      setForm({ name: '', phone: '', email: '', message: '' });
+      setStatus('sent');
+    } catch {
+      setError('We could not send your message right now. Please call or WhatsApp us directly.');
+      setStatus('idle');
+    }
+  };
 
   return (
     <section id="contact" className="py-28 bg-white">
@@ -122,17 +163,26 @@ export default function Contact() {
             {/* Contact Form */}
             <div className="rounded-2xl p-6 lg:p-7" style={{ background: 'var(--color-cream)' }}>
               <h3 className="font-display text-xl font-semibold mb-5" style={{ color: 'var(--color-charcoal)' }}>Send us a message</h3>
-              <form
-                className="space-y-4"
-                onSubmit={e => { e.preventDefault(); alert("Message sent! We'll get back to you soon."); }}
-              >
-                <div className="grid grid-cols-2 gap-4">
-                  <input id="contact-name" type="text" required placeholder="Your Name" className="input-premium" />
-                  <input id="contact-phone" type="tel" placeholder="Phone Number" className="input-premium" />
+              {status === 'sent' && (
+                <div className="mb-4 rounded-xl border border-green-200 bg-green-50 px-4 py-3 font-body text-sm text-green-700">
+                  Thanks, we received your message and will get back to you soon.
                 </div>
-                <input id="contact-email" type="email" placeholder="Email Address" className="input-premium" />
-                <textarea id="contact-message" rows="4" placeholder="Your message…" required className="input-premium resize-none" />
-                <button type="submit" className="btn-primary w-full justify-center">Send Message</button>
+              )}
+              {error && (
+                <div className="mb-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 font-body text-sm text-red-600">
+                  {error}
+                </div>
+              )}
+              <form className="space-y-4" onSubmit={handleSubmit}>
+                <div className="grid grid-cols-2 gap-4">
+                  <input id="contact-name" name="name" type="text" required placeholder="Your Name" value={form.name} onChange={handleChange} className="input-premium" />
+                  <input id="contact-phone" name="phone" type="tel" placeholder="Phone Number" value={form.phone} onChange={handleChange} className="input-premium" />
+                </div>
+                <input id="contact-email" name="email" type="email" placeholder="Email Address" value={form.email} onChange={handleChange} className="input-premium" />
+                <textarea id="contact-message" name="message" rows="4" placeholder="Your message…" required value={form.message} onChange={handleChange} className="input-premium resize-none" />
+                <button type="submit" disabled={status === 'submitting'} className="btn-primary w-full justify-center disabled:opacity-60">
+                  {status === 'submitting' ? 'Sending...' : 'Send Message'}
+                </button>
               </form>
             </div>
           </div>

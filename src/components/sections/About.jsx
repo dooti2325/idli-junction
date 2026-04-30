@@ -29,8 +29,8 @@ export default function About() {
                 <div className="h-[420px] rounded-2xl overflow-hidden shadow-card-hover">
                   <img
                     id="about-img-main"
-                    src="/images/chef_cooking.png"
-                    alt="Traditional South Indian cooking"
+                    src="/images/menu_original.jpeg"
+                    alt="Idli Junction menu"
                     loading="lazy"
                     className="w-full h-full object-cover"
                   />
@@ -50,8 +50,8 @@ export default function About() {
                 <div className="h-[200px] rounded-2xl overflow-hidden shadow-card">
                   <img
                     id="about-img-secondary-2"
-                    src="/images/filter_coffee.png"
-                    alt="Fresh filter coffee"
+                    src="/images/masala_dosa.png"
+                    alt="Fresh masala dosa"
                     loading="lazy"
                     className="w-full h-full object-cover"
                   />

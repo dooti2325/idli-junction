@@ -3,23 +3,7 @@ import { collection, onSnapshot, query, orderBy } from 'firebase/firestore';
 import { db } from '../../firebase';
 import MenuCard from '../MenuCard';
 import useScrollReveal from '../../hooks/useScrollReveal';
-
-const DUMMY_ITEMS = [
-  { id: '1', name: 'Regular Idli (2 Pcs)',    price: 20,  category: 'Idli',      description: 'Nagpur\'s softest steamed rice cakes served hot with sambar and fresh coconut chutney.', image: '/images/idli_platter.png' },
-  { id: '2', name: 'Thatte Idli',             price: 60,  category: 'Idli',      description: 'Large, disc-shaped Karnataka-style idli — thick, spongy and served with a generous pour of ghee and podi.', image: '/images/hero_bg.png' },
-  { id: '3', name: 'Podi Mini Idli',          price: 60,  category: 'Idli',      description: 'Bite-sized soft mini idlies tossed with spicy podi and ghee.', image: '/images/idli_platter.png' },
-  { id: '4', name: 'Masala Dosa',             price: 60,  category: 'Dosa',      description: 'Crispy golden crepe filled with spiced potato bhaji, paired with sambar and chutneys.', image: '/images/masala_dosa.png' },
-  { id: '5', name: 'Ghee Podi Masala Dosa',   price: 90,  category: 'Dosa',      description: 'Masala Dosa with a rich layer of ghee and spicy podi.', image: '/images/masala_dosa.png' },
-  { id: '6', name: 'Cheese Masala Dosa',      price: 80,  category: 'Dosa',      description: 'Classic Masala Dosa loaded with melted cheese.', image: '/images/masala_dosa.png' },
-  { id: '7', name: 'Junction Special Dosa',   price: 100, category: 'Dosa',      description: 'Our signature dosa with a special house blend of fillings and toppings.', image: '/images/masala_dosa.png' },
-  { id: '8', name: 'Onion Uttapam',           price: 60,  category: 'Uttapam',   description: 'Thick savory pancake topped with finely chopped onions.', image: '/images/hero_bg.png' },
-  { id: '9', name: 'Medu Vada (2 Pcs)',       price: 40,  category: 'Snacks',    description: 'Crispy savory lentil fritters with a fluffy interior, served hot with sambar.', image: '/images/medu_vada.png' },
-  { id: '10', name: 'Upma',                   price: 40,  category: 'Snacks',    description: 'Savory semolina porridge cooked with vegetables and spices.', image: '/images/hero_bg.png' },
-  { id: '11', name: 'Filter Coffee',          price: 20,  category: 'Beverages', description: 'Freshly brewed South Indian decoction coffee — strong and aromatic.', image: '/images/filter_coffee.png' },
-  { id: '12', name: 'Rasam Rice',             price: 60,  category: 'Mini Meals',description: 'Comforting rasam served with steamed rice.', image: '/images/hero_bg.png' },
-];
-
-const CATEGORIES = ['All', 'Idli', 'Dosa', 'Uttapam', 'Snacks', 'Beverages', 'Mini Meals'];
+import { DEFAULT_MENU_ITEMS } from '../../data/menu';
 
 function SkeletonCard() {
   return (
@@ -48,24 +32,26 @@ export default function Menu() {
     let unsub = () => {};
     try {
       if (!db) {
-        setItems(DUMMY_ITEMS);
+        setItems(DEFAULT_MENU_ITEMS);
         setLoading(false);
         return;
       }
       const q = query(collection(db, 'menu_items'), orderBy('category'));
       unsub = onSnapshot(q, (snap) => {
         const arr = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-        setItems(arr.length ? arr : DUMMY_ITEMS);
+        setItems(arr.length ? arr : DEFAULT_MENU_ITEMS);
         setLoading(false);
-      }, () => { setItems(DUMMY_ITEMS); setLoading(false); });
+      }, () => { setItems(DEFAULT_MENU_ITEMS); setLoading(false); });
     } catch {
-      setItems(DUMMY_ITEMS);
+      setItems(DEFAULT_MENU_ITEMS);
       setLoading(false);
     }
     return unsub;
   }, []);
 
-  const filtered = active === 'All' ? items : items.filter(i => i.category === active);
+  const visibleItems = items.filter(item => item.available !== false);
+  const categories = ['All', ...new Set(visibleItems.map(item => item.category).filter(Boolean))];
+  const filtered = active === 'All' ? visibleItems : visibleItems.filter(i => i.category === active);
 
   return (
     <section id="menu" className="py-28 bg-cream">
@@ -85,7 +71,7 @@ export default function Menu() {
 
         {/* Category pills */}
         <div className="flex flex-wrap justify-center gap-2.5 mb-12 reveal">
-          {CATEGORIES.map(cat => (
+          {categories.map(cat => (
             <button
               key={cat}
               id={`category-btn-${cat.toLowerCase()}`}
@@ -112,6 +98,12 @@ export default function Menu() {
               ))
           }
         </div>
+
+        {!loading && filtered.length === 0 && (
+          <div className="mt-10 rounded-2xl border border-dashed border-spice/30 bg-white p-8 text-center font-body text-sm text-charcoal/55">
+            No dishes are available in this category right now.
+          </div>
+        )}
       </div>
     </section>
   );

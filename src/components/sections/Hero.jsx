@@ -106,7 +106,7 @@ export default function Hero() {
           <a id="hero-cta-menu" href="#menu" className="btn-primary" style={{ fontSize: '1rem', padding: '1rem 2rem' }}>
             Explore Menu
           </a>
-          <a id="hero-cta-call" href="tel:+919876543210" className="btn-outline" style={{ fontSize: '1rem', padding: '1rem 2rem' }}>
+          <a id="hero-cta-call" href="tel:+919209521933" className="btn-outline" style={{ fontSize: '1rem', padding: '1rem 2rem' }}>
             Call Us Now
           </a>
         </div>

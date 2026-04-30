@@ -13,7 +13,11 @@ function Sidebar() {
   const { pathname } = useLocation();
 
   const handleLogout = async () => {
-    try { await logout(); } catch {}
+    try {
+      await logout();
+    } catch (error) {
+      console.warn('Unable to sign out cleanly.', error);
+    }
     window.location.href = '/admin/login';
   };
 

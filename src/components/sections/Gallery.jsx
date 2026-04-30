@@ -5,10 +5,10 @@ import useScrollReveal from '../../hooks/useScrollReveal';
 const GALLERY_IMAGES = [
   { src: '/images/idli_platter.png', alt: 'Soft Idli with Sambar', span: 'row-span-2' },
   { src: '/images/masala_dosa.png', alt: 'Masala Dosa closeup' },
-  { src: '/images/medu_vada.png', alt: 'Medu Vada' },
+  { src: '/images/menu_original.jpeg', alt: 'Original printed menu' },
   { src: '/images/filter_coffee.png', alt: 'Filter Coffee' },
   { src: '/images/hero_bg.png', alt: 'Set Dosa' },
-  { src: '/images/chef_cooking.png', alt: 'Chef cooking', span: 'col-span-2' },
+  { src: '/images/menu_original.jpeg', alt: 'Idli Junction menu board', span: 'col-span-2' },
 ];
 
 export default function Gallery() {
